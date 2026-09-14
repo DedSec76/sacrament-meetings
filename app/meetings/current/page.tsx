@@ -1,6 +1,18 @@
+import { getMeetings } from "@/lib/meetings-db";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-    return (
-        <h1 className="mt-16">Aqui va estar la reunion actual de esta semana</h1>
-    )
+export default async function Page() {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - dayOfWeek)
+    
+    const formatDate = sunday.toISOString().split("T")[0];
+    console.log(formatDate)
+    const meetings = await getMeetings(formatDate)
+    
+    if(!meetings.length) return <p>No meeting found</p>
+
+    redirect(`/meetings/${meetings[0].id}`)
 }

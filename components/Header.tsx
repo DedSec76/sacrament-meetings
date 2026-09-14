@@ -5,8 +5,8 @@ export const Header = () => {
 
     return (
         <header className="px-4 my-2">
-            <h1 className="text-sm text-gray-300 uppercase">Jicamarca Ward</h1>
-            <p>{date.toLocaleDateString("en-PE", {
+            <h1 className="text-lg md:text-2xl text-gray-300 uppercase font-bold">Jicamarca Ward</h1>
+            <p className="text-gray-400">{date.toLocaleDateString("en-PE", {
                 day: "numeric",
                 month: "long",
                 year: "numeric",

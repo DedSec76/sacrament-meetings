@@ -14,7 +14,7 @@ const meetings: SacramentMeeting[] = [
         stakeBusiness: false,
         sacramentHymn: { number: 169, title: "In Remembrance of Thy Suffering" },
         speakers: [
-            { name: "Sister Page", topic: "The Holy Dinner", type: "speaker" },
+            { name: "Sister Page", topic: "", type: "musical-number" },
             { name: "Youth Ariel", topic: "", type: "musical-number" }
         ],
         closingHymn: { number: 31, title: "O God, Our Help in Ages Past" },
@@ -67,7 +67,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 3,
-        date: "2026-11-16",
+        date: "2026-09-20",
         meetingType: "stake",
         presiding: "President Ramirez",
         conducting: "Brother Carlos",
@@ -79,7 +79,7 @@ const meetings: SacramentMeeting[] = [
             title: "The Lord Is My Light"
         },
         openingPrayer: "Brother Mateo",
-        wardBusiness: [],
+        wardBusiness: [{description: "Special meeting for new converts"}, {description: "Gala for young single adults"}, {description: "Gala for married couples"}],
         stakeBusiness: true,
         sacramentHymn: {
             number: 194,
@@ -111,7 +111,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 4,
-        date: "2026-11-23",
+        date: "2026-09-13",
         meetingType: "testimony",
         presiding: "Bishop Torres",
         conducting: "Brother Luis",
@@ -132,17 +132,17 @@ const meetings: SacramentMeeting[] = [
         speakers: [
             {
                 name: "Bishop Torres",
-                topic: "",
+                topic: "The Importance of the Lord's Supper",
                 type: "speaker"
             },
             {
                 name: "Sister Andrea",
-                topic: "",
+                topic: "Charity as a disciple of Jesus Christ",
                 type: "speaker"
             },
             {
                 name: "Brother Felipe",
-                topic: "",
+                topic: "Easter Sunday",
                 type: "speaker"
             }
         ],
@@ -155,7 +155,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 5,
-        date: "2026-11-30",
+        date: "2026-09-14",
         meetingType: "regular",
         presiding: "Bishop Herrera",
         conducting: "Sister Patricia",
@@ -202,7 +202,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 6,
-        date: "2026-12-07",
+        date: "2026-09-07",
         meetingType: "general",
         presiding: "Bishop Castillo",
         conducting: "Brother Andres",
@@ -250,7 +250,7 @@ const meetings: SacramentMeeting[] = [
 ];
 
 export function getMeetings(date?: string | null): SacramentMeeting[] {
-    if (date) return meetings.filter(m => m.date === date);
+    if (date) return meetings?.filter(m => m.date === date);
     return meetings
 }
 
