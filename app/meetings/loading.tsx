@@ -1,6 +1,6 @@
 
-export default function loading() {
+export default function Loading() {
     return (
-        <><p>Loading...</p></>
+        <><p className="px-4 text-xl">Loading...</p></>
     )
 }

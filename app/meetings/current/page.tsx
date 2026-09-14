@@ -9,7 +9,7 @@ export default async function Page() {
     sunday.setDate(today.getDate() - dayOfWeek)
     
     const formatDate = sunday.toISOString().split("T")[0];
-    console.log(formatDate)
+    
     const meetings = await getMeetings(formatDate)
     
     if(!meetings.length) return <p>No meeting found</p>

@@ -3,7 +3,7 @@ import { SacramentMeeting } from "./types";
 const meetings: SacramentMeeting[] = [
     {
         id: 1,
-        date: "2026-11-02",
+        date: "2026-11-08",
         meetingType: "general",
         presiding: "Bishop Carhuaz",
         conducting: "Brother Saul",
@@ -23,7 +23,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 2,
-        date: "2026-11-09",
+        date: "2026-09-13",
         meetingType: "regular",
         presiding: "President Mendoza",
         conducting: "Brother Daniel",
@@ -111,7 +111,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 4,
-        date: "2026-09-13",
+        date: "2026-09-27",
         meetingType: "testimony",
         presiding: "Bishop Torres",
         conducting: "Brother Luis",
@@ -155,7 +155,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 5,
-        date: "2026-09-14",
+        date: "2026-10-04",
         meetingType: "regular",
         presiding: "Bishop Herrera",
         conducting: "Sister Patricia",
@@ -202,7 +202,7 @@ const meetings: SacramentMeeting[] = [
 
     {
         id: 6,
-        date: "2026-09-07",
+        date: "2026-10-11",
         meetingType: "general",
         presiding: "Bishop Castillo",
         conducting: "Brother Andres",

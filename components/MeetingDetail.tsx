@@ -21,13 +21,13 @@ export default function MeetingDetail(meeting: SacramentMeeting) {
                 </p>
 
                 <span className="text-xs text-gray-400 uppercase">Meeting type</span>
-                <h3 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting.meetingType}</h3>
+                <h2 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting.meetingType}</h2>
                 <div className="mb-4 text-sm md:text-base rounded-xl p-3 flex justify-around gap-4 border border-gray-800 bg-[#131b2e]">
                     <p className="uppercase font-bold text-yellow-300">Presiding <span className="block capitalize text-white font-normal text-base">{ meeting.presiding }</span> </p>
                     <p className="uppercase font-bold text-yellow-300">Conducting <span className="block capitalize text-white font-normal text-base">{ meeting.conducting }</span></p>
                 </div>
 
-                <h4 className="mt-6 flex gap-2 items-center md:text-lg"><Megaphone size={"16"} /> Ward Announcements</h4>
+                <h3 className="mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone /> Ward Announcements</h3>
                 <div className="md:text-lg mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">
                     <ul className="list-disc pl-4">{ meeting?.announcements?.map((a, i) => (
                         <li key={i}>{a}</li>
@@ -36,7 +36,7 @@ export default function MeetingDetail(meeting: SacramentMeeting) {
                 </div>
 
                 { /* Section Order of Worship */}
-                <h4 className="mt-6 mb-4 text-primary md:text-lg flex gap-2 items-center"><BookOpen size={"16"} /> Order of Worship</h4>
+                <h3 className="mt-6 mb-4 text-primary md:text-lg lg:text-xl flex gap-2 items-center"><BookOpen size={"16"} /> Order of Worship</h3>
                 <div className="max-w-100 mb-4 flex flex-col gap-2">
                     <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
                         <p className="uppercase font-bold text-primary/80 text-xs md:text-base">Opening Hymn</p>

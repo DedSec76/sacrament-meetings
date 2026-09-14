@@ -1,4 +1,3 @@
-
 import MeetingDetail from "@/components/MeetingDetail";
 import { getMeetingById } from "@/lib/meetings-db";
 
@@ -13,6 +12,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
     if(!meeting) return <p>Meeting not found</p>
     
-    return <MeetingDetail {...meeting} />
+    return <main><MeetingDetail {...meeting} /></main>
        
 }
