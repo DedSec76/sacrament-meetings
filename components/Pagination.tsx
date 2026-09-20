@@ -17,11 +17,11 @@ export function Pagination({ totalPages }: { totalPages: number }) {
     return (
         <nav aria-label="Pagination" className="mt-8 flex gap-4 items-center justify-center">
             {currentPage > 1 && (
-                <Link href={createPageURL(currentPage - 1)} className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-800">Previous</Link>
+                <Link href={createPageURL(currentPage - 1)} className="bg-blue-800 px-4 py-2 rounded-lg hover:bg-blue-900">Previous</Link>
             )}
             <span>Page {currentPage} of {totalPages}</span>
             { currentPage < totalPages && (
-                <Link href={createPageURL(currentPage + 1)} className="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-800">Next</Link>
+                <Link href={createPageURL(currentPage + 1)} className="bg-blue-800 px-4 py-2 rounded-lg hover:bg-blue-900">Next</Link>
             ) }
         </nav>
     )
