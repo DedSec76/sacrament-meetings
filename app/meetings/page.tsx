@@ -1,8 +1,28 @@
+"use client";
 import MeetingCard from "@/components/MeetingCard";
-import { getMeetings } from "@/lib/meetings-db";
+import type { SacramentMeeting } from "@/lib/types";
+import { useEffect, useState } from "react";
 
-export default async function Page() {
-    const meetings = await getMeetings();
+export default function Page() {
+    const [meetings, setMeetings] = useState<SacramentMeeting[]>([]);
+    
+    useEffect(() => {
+        const getFetchData = async () => {
+            try {
+                const response = await fetch("/api/meetings");
+
+                if(!response.ok) throw new Error("Error fetching data")
+
+                const data: SacramentMeeting[] = await response.json();
+                
+                setMeetings(data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        getFetchData();
+    }, [])
+    
 
     return (
         <main className="mt-4 mb-6 px-4">

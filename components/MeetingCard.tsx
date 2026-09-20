@@ -30,7 +30,7 @@ export default function MeetingCard(meeting: SacramentMeeting) {
 
                 { meeting.stakeBusiness ? (
                     <div className="mt-4 p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
-                        <h4 className="uppercase font-bold text-green-300 text-lg md:text-xl">Ward Business</h4>
+                        <h4 className="uppercase font-bold text-green-300 text-lg md:text-xl">Stake Business</h4>
                     </div> 
                 ): "" }
 

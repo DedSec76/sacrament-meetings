@@ -1,10 +1,38 @@
-import { SacramentMeeting } from "@/lib/types";
+"use client";
+import type { SacramentMeeting } from "@/lib/types";
 import { ArrowLeft, BookOpen, Megaphone } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function MeetingDetail(meeting: SacramentMeeting) {
+export default function MeetingDetail({ meetingId }: { meetingId: number }) {
+    const [meeting, setMeeting] = useState<SacramentMeeting | null>(null);
+
+    useEffect(() => {
+        const getFetchData = async() => {
+            try {
+                const response = await fetch(`/api/meetings/${meetingId}`);
+
+                if(!response.ok) throw new Error("Error fetching a meeting")
+
+                const data: SacramentMeeting = await response.json()
+               
+                setMeeting(data)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+
+        if(!isNaN(meetingId)) {
+            getFetchData();
+        }
+    }, [meetingId]);
+
+    if (isNaN(meetingId)) return <p>Invalid meeting ID</p>
     
-    const speakers = meeting.speakers.filter(m => m.type === "speaker")
+    if(!meeting) return <p>Meeting not found</p>
+    
+    const speakers = meeting?.speakers?.filter(m => m.type === "speaker") 
+    const musicalNumbers = meeting?.speakers?.filter(m => m.type === "musical-number")
     
     return (
         <article className="mt-6 px-4">
@@ -27,10 +55,18 @@ export default function MeetingDetail(meeting: SacramentMeeting) {
                     <p className="uppercase font-bold text-yellow-300">Conducting <span className="block capitalize text-white font-normal text-base">{ meeting.conducting }</span></p>
                 </div>
 
-                <h3 className="mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone /> Ward Announcements</h3>
+                <h3 className="mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone />{ meeting.stakeBusiness ? "Stake" : "Ward" } Announcements</h3>
                 <div className="md:text-lg mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">
                     <ul className="list-disc pl-4">{ meeting?.announcements?.map((a, i) => (
                         <li key={i}>{a}</li>
+                    )) }
+                    </ul>
+                </div>
+
+                <h3 className="text-green-300 font-bold mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone /> Ward Business</h3>
+                <div className="md:text-lg mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">
+                    <ul className="list-disc pl-4">{ meeting?.wardBusiness?.map((wb, i) => (
+                        <li className="text-green-200" key={i}>{wb.description}</li>
                     )) }
                     </ul>
                 </div>
@@ -47,17 +83,7 @@ export default function MeetingDetail(meeting: SacramentMeeting) {
                         <p className="capitalize text-white font-normal text-base">{meeting.openingPrayer}</p>
                     </div>
 
-                    { meeting?.stakeBusiness ?? (
-                    <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
-                        <h4 className="uppercase font-bold text-gray-400 text-xs md:text-base">Ward Business</h4>
-                    </div> )}
-
-                    <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
-                        <p className="uppercase font-bold text-yellow-400 text-xs md:text-base">Sacrament Hymn</p>
-                        <p className="capitalize text-yellow-400 font-bold text-2xl">{meeting.sacramentHymn.number}  <span className="text-white ml-4 text-sm md:text-lg font-normal">{`"${meeting.sacramentHymn.title}"`}</span></p>
-                    </div>
-
-                    { speakers.length > 0 ? (
+                    { speakers?.length > 0 ? (
                     <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
                         <p className="uppercase font-bold text-primary/80 text-xs mb-1 md:text-base">Speakers</p>
                         <ul className="capitalize text-white font-normal text-base md:text-lg">
@@ -65,8 +91,17 @@ export default function MeetingDetail(meeting: SacramentMeeting) {
                                 <li className="mb-2" key={i}><p>{s.name}</p> <p className="italic text-gray-400 font-normal text-sm md:text-base">{ `"${s.topic}"` }</p></li>
                             ))}
                         </ul>
-                    </div> ) : ""
-                    }
+                    </div> 
+                    ) : (
+                    <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
+                        <p className="uppercase font-bold text-primary/80 text-xs mb-1 md:text-base">Musical Number</p>
+                        <ul className="capitalize text-white font-normal text-base md:text-lg">
+                            {musicalNumbers.map((s, i) => (
+                                <li className="mb-2" key={i}><p>{s.name}</p> <p className="italic text-gray-400 text-lg font-bold md:text-xl">musical number</p></li>
+                            ))}
+                        </ul>
+                    </div>
+                    )}
 
                     <div className="p-2 rounded-xl border border-gray-800 bg-[#131b2e]">
                         <p className="uppercase font-bold text-gray-400 text-xs md:text-base">Closing Hymn</p>
