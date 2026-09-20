@@ -12,7 +12,7 @@ export default async function Page() {
     
     const meetings = await getMeetings(formatDate)
     
-    if(!meetings.length) return <p>No meeting found</p>
+    if(!meetings.length) redirect("/meetings")
 
     redirect(`/meetings/${meetings[0].id}`)
 }
