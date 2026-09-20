@@ -1,259 +1,99 @@
-import { SacramentMeeting } from "./types";
+import { neon } from "@neondatabase/serverless";
+import type { SacramentMeeting } from "./types";
 
-const meetings: SacramentMeeting[] = [
-    {
-        id: 1,
-        date: "2026-11-08",
-        meetingType: "general",
-        presiding: "Bishop Carhuaz",
-        conducting: "Brother Saul",
-        announcements: ["New temple"],
-        openingHymn: { number: 2, title: "The Spirit of God" },
-        openingPrayer: "Brother Raul Ginemez",
-        wardBusiness: [{description: "Sustaining of new Primary president"}],
-        stakeBusiness: false,
-        sacramentHymn: { number: 169, title: "In Remembrance of Thy Suffering" },
-        speakers: [
-            { name: "Sister Page", topic: "", type: "musical-number" },
-            { name: "Youth Ariel", topic: "", type: "musical-number" }
-        ],
-        closingHymn: { number: 31, title: "O God, Our Help in Ages Past" },
-        closingPrayer: "Brother Manuel",
-    },
+const sql = neon(process.env.DATABASE_URL!);
 
-    {
-        id: 2,
-        date: "2026-09-13",
-        meetingType: "regular",
-        presiding: "President Mendoza",
-        conducting: "Brother Daniel",
-        announcements: [
-            "Youth activity this Saturday",
-            "Temple recommend interviews"
-        ],
-        openingHymn: {
-            number: 85,
-            title: "How Firm a Foundation"
-        },
-        openingPrayer: "Sister Valeria",
-        wardBusiness: [
-            {
-                description: "Sustaining of new Relief Society secretary"
-            }
-        ],
-        stakeBusiness: false,
-        sacramentHymn: {
-            number: 193,
-            title: "I Stand All Amazed"
-        },
-        speakers: [
-            {
-                name: "Brother Samuel",
-                topic: "Strengthening Our Faith",
-                type: "speaker"
-            },
-            {
-                name: "Sister Elena",
-                topic: "Serving Others",
-                type: "speaker"
-            }
-        ],
-        closingHymn: {
-            number: 227,
-            title: "Improve the Shining Moments"
-        },
-        closingPrayer: "Brother Jorge"
-    },
+const ITEMS_PER_PAGE = 5;
 
-    {
-        id: 3,
-        date: "2026-09-20",
-        meetingType: "stake",
-        presiding: "President Ramirez",
-        conducting: "Brother Carlos",
-        announcements: [
-            "Stake conference assignments"
-        ],
-        openingHymn: {
-            number: 89,
-            title: "The Lord Is My Light"
-        },
-        openingPrayer: "Brother Mateo",
-        wardBusiness: [{description: "Special meeting for new converts"}, {description: "Gala for young single adults"}, {description: "Gala for married couples"}],
-        stakeBusiness: true,
-        sacramentHymn: {
-            number: 194,
-            title: "There Is a Green Hill Far Away"
-        },
-        speakers: [
-            {
-                name: "President Ramirez",
-                topic: "Following the Savior",
-                type: "speaker"
-            },
-            {
-                name: "Sister Thompson",
-                topic: "Faith in Jesus Christ",
-                type: "speaker"
-            },
-            {
-                name: "Youth Choir",
-                topic: "",
-                type: "musical-number"
-            }
-        ],
-        closingHymn: {
-            number: 219,
-            title: "Because I Have Been Given Much"
-        },
-        closingPrayer: "Sister Mariana"
-    },
+export async function getMeetings(
+    query: string = "",
+    currentPage: number = 1
+): Promise<SacramentMeeting[]> {
 
-    {
-        id: 4,
-        date: "2026-09-27",
-        meetingType: "testimony",
-        presiding: "Bishop Torres",
-        conducting: "Brother Luis",
-        announcements: [
-            "Food donation drive"
-        ],
-        openingHymn: {
-            number: 100,
-            title: "Nearer, Dear Savior, to Thee"
-        },
-        openingPrayer: "Sister Camila",
-        wardBusiness: [],
-        stakeBusiness: false,
-        sacramentHymn: {
-            number: 174,
-            title: "While of These Emblems We Partake"
-        },
-        speakers: [
-            {
-                name: "Bishop Torres",
-                topic: "The Importance of the Lord's Supper",
-                type: "speaker"
-            },
-            {
-                name: "Sister Andrea",
-                topic: "Charity as a disciple of Jesus Christ",
-                type: "speaker"
-            },
-            {
-                name: "Brother Felipe",
-                topic: "Easter Sunday",
-                type: "speaker"
-            }
-        ],
-        closingHymn: {
-            number: 96,
-            title: "Dearest Children, God Is Near You"
-        },
-        closingPrayer: "Brother Esteban"
-    },
+    const searchTerm = `%${query}%`
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
-    {
-        id: 5,
-        date: "2026-10-04",
-        meetingType: "regular",
-        presiding: "Bishop Herrera",
-        conducting: "Sister Patricia",
-        announcements: [
-            "Christmas service project",
-            "Ward choir rehearsal"
-        ],
-        openingHymn: {
-            number: 209,
-            title: "Hark! The Herald Angels Sing"
-        },
-        openingPrayer: "Brother Nicolas",
-        wardBusiness: [
-            {
-                description: "Calling of new Sunday School teacher"
-            },
-            {
-                description: "Sustaining of Primary teachers"
-            }
-        ],
-        stakeBusiness: false,
-        sacramentHymn: {
-            number: 172,
-            title: "In Humility, Our Savior"
-        },
-        speakers: [
-            {
-                name: "Sister Patricia",
-                topic: "The Importance of Family",
-                type: "speaker"
-            },
-            {
-                name: "Brother Oscar",
-                topic: "Preparing for Christmas",
-                type: "speaker"
-            }
-        ],
-        closingHymn: {
-            number: 201,
-            title: "Joy to the World"
-        },
-        closingPrayer: "Sister Gabriela"
-    },
+    const rows = await sql`
+        SELECT id,
+            to_char(date, 'YYYY-MM-DD') AS "date",
+            meeting_type AS "meetingType",
+            presiding, conducting, announcements,
+            opening_hymn AS "openingHymn",
+            opening_prayer AS "openingPrayer",
+            ward_business AS "wardBusiness",
+            stake_business AS "stakeBusiness",
+            sacrament_hymn AS "sacramentHymn",
+            speakers,
+            closing_hymn AS "closingHymn",
+            closing_prayer AS "closingPrayer"
+            FROM meetings
+                WHERE 
+                    presiding ILIKE ${searchTerm}
+                    OR conducting ILIKE ${searchTerm}
+                    OR meeting_type ILIKE ${searchTerm}
+                    OR speakers::text ILIKE ${searchTerm}
+                    OR to_char(date, 'YYYY-MM-DD') ILIKE ${searchTerm}
+                    ORDER BY date DESC
+                LIMIT ${ITEMS_PER_PAGE}
+                OFFSET ${offset}
+    `;
 
-    {
-        id: 6,
-        date: "2026-10-11",
-        meetingType: "general",
-        presiding: "Bishop Castillo",
-        conducting: "Brother Andres",
-        announcements: [
-            "Christmas devotional next Sunday"
-        ],
-        openingHymn: {
-            number: 201,
-            title: "Joy to the World"
-        },
-        openingPrayer: "Brother Ricardo",
-        wardBusiness: [
-            {
-                description: "Sustaining of new Elders Quorum presidency"
-            }
-        ],
-        stakeBusiness: true,
-        sacramentHymn: {
-            number: 169,
-            title: "In Remembrance of Thy Suffering"
-        },
-        speakers: [
-            {
-                name: "Sister Sofia",
-                topic: "The Light of Christ",
-                type: "speaker"
-            },
-            {
-                name: "Ward Choir",
-                topic: "",
-                type: "musical-number"
-            },
-            {
-                name: "Brother Andres",
-                topic: "Remembering the Savior",
-                type: "speaker"
-            }
-        ],
-        closingHymn: {
-            number: 214,
-            title: "I Know That My Redeemer Lives"
-        },
-        closingPrayer: "Brother Gabriel"
-    }
-];
-
-export function getMeetings(date?: string | null): SacramentMeeting[] {
-    if (date) return meetings?.filter(m => m.date === date);
-    return meetings
+    return rows as unknown as SacramentMeeting[];
 }
 
-export function getMeetingById(id: number): SacramentMeeting | null {
-    return meetings.find(m => m.id === id) ?? null
+export async function getMeetingsTotalPages(
+    query: string = "",
+): Promise<number> {
+    
+    const searchTerm = `%${query}%`
+
+    const rows = await sql`
+        SELECT COUNT(*) FROM meetings
+                WHERE 
+                    presiding ILIKE ${searchTerm}
+                    OR conducting ILIKE ${searchTerm}
+                    OR meeting_type ILIKE ${searchTerm}
+                    OR speakers::text ILIKE ${searchTerm}
+    `;
+
+    return Math.ceil(Number(rows[0].count) / ITEMS_PER_PAGE )
+}
+
+export async function getMeetingById(
+    id: number
+): Promise<SacramentMeeting | null> {
+    const rows = await sql`
+        SELECT
+            id,
+            to_char(date, 'YYYY-MM-DD') AS "date",
+            meeting_type AS "meetingType",
+            presiding, conducting, announcements,
+            opening_hymn AS "openingHymn",
+            opening_prayer AS "openingPrayer",
+            ward_business AS "wardBusiness",
+            stake_business AS "stakeBusiness",
+            sacrament_hymn AS "sacramentHymn",
+            speakers,
+            closing_hymn AS "closingHymn",
+            closing_prayer AS "closingPrayer"
+        FROM meetings WHERE id = ${id}
+    `
+    return (rows[0] as unknown as SacramentMeeting) ?? null;
+}
+
+export async function addMeeting(
+    data: Omit<SacramentMeeting, 'id'>
+) : Promise<SacramentMeeting> {
+    throw new Error("addMeeting: database implementation coming in week 04");
+}
+
+export async function updateMeeting(
+    id: number,
+    updates: Partial<SacramentMeeting>
+) : Promise<SacramentMeeting | null> {
+    throw new Error("updateMeeting: database implementation coming in Week 04");
+}
+
+export async function deleteMeeting(id: number): Promise<boolean> {
+    throw new Error("deleteMeeting: database implementation coming in Week 04")
 }
