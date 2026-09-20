@@ -12,7 +12,7 @@ export default function MeetingCard(meeting: SacramentMeeting) {
                     month: "long",
                     year: "numeric"
                 }) }</p>
-                <span className="text-xs md:text-sm text-gray-400 uppercase">Meeting type</span>
+                <span className="text-xs md:text-sm text-gray-300 uppercase">Meeting type</span>
                 <h3 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting.meetingType}</h3>
                 <div className="mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">
                     <p className="uppercase font-bold text-yellow-300 text-sm">Presiding <span className="block capitalize text-white font-normal text-base md:text-lg">{ meeting.presiding }</span> </p>
