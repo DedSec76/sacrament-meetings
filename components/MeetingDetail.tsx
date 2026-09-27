@@ -6,16 +6,17 @@ import { useEffect, useState } from "react";
 
 export default function MeetingDetail({ meetingId }: { meetingId: number }) {
     const [meeting, setMeeting] = useState<SacramentMeeting | null>(null);
-
+    
     useEffect(() => {
         const getFetchData = async() => {
+            
             try {
                 const response = await fetch(`/api/meetings/${meetingId}`);
-
+                
                 if(!response.ok) throw new Error("Error fetching a meeting")
-
+                
                 const data: SacramentMeeting = await response.json()
-               
+                
                 setMeeting(data)
             } catch (error) {
                 console.error(error)
@@ -27,9 +28,11 @@ export default function MeetingDetail({ meetingId }: { meetingId: number }) {
         }
     }, [meetingId]);
 
-    if (isNaN(meetingId)) return <p>Invalid meeting ID</p>
+    if (isNaN(meetingId)) return <p>Meeting ID must be a number</p>
     
-    if(!meeting) return <p>Meeting not found</p>
+    if(!meeting) {
+        return <p>Meeting not founded</p>
+    }
     
     const speakers = meeting?.speakers?.filter(m => m.type === "speaker") 
     const musicalNumbers = meeting?.speakers?.filter(m => m.type === "musical-number")
@@ -40,7 +43,7 @@ export default function MeetingDetail({ meetingId }: { meetingId: number }) {
             <section className="max-w-200 mx-auto">
                 <Link href={"/meetings"} className="mb-4 text-primary md:text-lg flex items-center gap-2 hover:-translate-x-2 hover:underline transition"><ArrowLeft /> Meetings</Link>
                 
-                <p className="text-gray-300 text-sm md:text-base">{ new Date(meeting.date).toLocaleString("en-US", {
+                <p className="text-gray-300 text-sm md:text-base">{ new Date(meeting?.date).toLocaleString("en-US", {
                         weekday: "long",
                         day: "numeric",
                         month: "long",
@@ -49,13 +52,13 @@ export default function MeetingDetail({ meetingId }: { meetingId: number }) {
                 </p>
 
                 <span className="text-xs text-gray-400 uppercase">Meeting type</span>
-                <h2 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting.meetingType}</h2>
+                <h2 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting?.meetingType}</h2>
                 <div className="mb-4 text-sm md:text-base rounded-xl p-3 flex justify-around gap-4 border border-gray-800 bg-[#131b2e]">
                     <p className="uppercase font-bold text-yellow-300">Presiding <span className="block capitalize text-white font-normal text-base">{ meeting.presiding }</span> </p>
                     <p className="uppercase font-bold text-yellow-300">Conducting <span className="block capitalize text-white font-normal text-base">{ meeting.conducting }</span></p>
                 </div>
 
-                <h3 className="mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone />{ meeting.stakeBusiness ? "Stake" : "Ward" } Announcements</h3>
+                <h3 className="mt-6 flex gap-2 items-center md:text-lg lg:text-xl"><Megaphone />{ meeting?.stakeBusiness ? "Stake" : "Ward" } Announcements</h3>
                 <div className="md:text-lg mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">
                     <ul className="list-disc pl-4">{ meeting?.announcements?.map((a, i) => (
                         <li key={i}>{a}</li>

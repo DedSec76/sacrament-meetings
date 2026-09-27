@@ -21,7 +21,7 @@ export default function MeetingSearch() {
 
         }, 300);
     return (
-        <div className="w-full md:max-w-125 mb-8 rounded-lg bg-gray-800 px-4 py-2 flex gap-2 items-center md:text-lg">
+        <div className="w-full md:max-w-125 rounded-lg bg-gray-800 px-4 py-2 flex gap-2 items-center md:text-lg">
             <Search size={20}/>
             <input 
                 className="outline-0 w-full"

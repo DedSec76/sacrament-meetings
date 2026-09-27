@@ -2,6 +2,7 @@ import MeetingCard from "@/components/MeetingCard";
 import MeetingSearch from "@/components/MeetingSearch";
 import { Pagination } from "@/components/Pagination";
 import { getMeetings, getMeetingsTotalPages } from "@/lib/meetings-db";
+import Link from "next/link";
 
 export default async function MeetingsPage(props: {
     searchParams?: Promise<{ query?: string, page?: string }>
@@ -18,7 +19,10 @@ export default async function MeetingsPage(props: {
     return (
         <main className="mt-4 mb-6 px-4">
             <h2 className="py-4 text-xl md:text-3xl font-bold text-center">Meetings</h2>
-            <MeetingSearch />
+            <div className="mb-8 flex gap-8 justify-between items-center">
+                <MeetingSearch />
+                <Link href={"meetings/new"} className="bg-blue-200 text-black px-4 py-2 rounded-lg">Create New Meeting</Link>
+            </div>
 
             <section className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
                 { meetings.map(m => (

@@ -82,18 +82,92 @@ export async function getMeetingById(
 }
 
 export async function addMeeting(
-    data: Omit<SacramentMeeting, 'id'>
-) : Promise<SacramentMeeting> {
-    throw new Error("addMeeting: database implementation coming in week 04");
+    data: Omit<SacramentMeeting, "id">
+) : Promise<SacramentMeeting | null> {
+    const rows = await sql`
+        INSERT INTO meetings(
+            date,
+            meeting_type,
+            presiding,
+            conducting,
+            announcements,
+            opening_hymn,
+            opening_prayer,
+            ward_business,
+            stake_business,
+            sacrament_hymn,
+            speakers,
+            closing_hymn,
+            closing_prayer
+        ) VALUES (
+            ${data.date},
+            ${data.meetingType},
+            ${data.presiding},
+            ${data.conducting},
+            ${data.announcements},
+            ${JSON.stringify(data.openingHymn)},
+            ${data.openingPrayer},
+            ${JSON.stringify(data.wardBusiness)},
+            ${data.stakeBusiness},
+            ${JSON.stringify(data.sacramentHymn)},
+            ${JSON.stringify(data.speakers)},
+            ${JSON.stringify(data.closingHymn)},
+            ${data.closingPrayer}
+        )
+        RETURNING *
+    `
+    return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
 export async function updateMeeting(
-    id: number,
+    id: string,
     updates: Partial<SacramentMeeting>
 ) : Promise<SacramentMeeting | null> {
-    throw new Error("updateMeeting: database implementation coming in Week 04");
+    const columnMap: Record<string, string> = {
+        date: "date",
+        meetingType: "meeting_type",
+        presiding: "presiding",
+        conducting: "conducting",
+        announcements: "announcements",
+        openingHymn: "opening_hymn",
+        openingPrayer: "opening_prayer",
+        wardBusiness: "ward_business",
+        stakeBusiness: "stake_business",
+        sacramentHymn: "sacrament_hymn",
+        speakers: "speakers",
+        closingHymn: "closing_hymn",
+        closingPrayer: "closing_prayer",
+    };
+
+    const entries = Object.entries(updates)
+
+    if(entries.length === 0) return null;
+
+    const fields = entries.map(([key], index) => `${columnMap[key]} = $${index + 1}`)
+
+    const values = entries.map(([key, value]) =>
+        ["openingHymn", "wardBusiness", "sacramentHymn", "speakers", "closingHymn"].includes(key)
+            ? JSON.stringify(value)
+            : value
+    );
+
+    values.push(id)
+    
+    const rows = await sql.query(
+        `
+        UPDATE meetings
+        SET ${fields.join(", ")}
+        WHERE id = $${values.length}
+        RETURNING *
+    `,
+    values
+    );
+    
+    return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
 export async function deleteMeeting(id: number): Promise<boolean> {
-    throw new Error("deleteMeeting: database implementation coming in Week 04")
+    const rows = await sql`DELETE FROM meetings WHERE id = ${id} RETURNING *`
+    
+    return rows.length > 0;
 }
