@@ -16,12 +16,7 @@ export async function generateMetadata({ params }: Props) {
 
     return {
         title: `${meeting.id} ${meeting.meetingType}`,
-        description: meeting.announcements,
-        openGraph: {
-            title: meeting.meetingType,
-            description: meeting.announcements,
-            image: '@/app/opengraph-image.png'
-        }
+        description: meeting?.announcements?.map(a => a.split(",")),
     }
 }
 
