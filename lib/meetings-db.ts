@@ -81,6 +81,24 @@ export async function getMeetingById(
     return (rows[0] as unknown as SacramentMeeting) ?? null;
 }
 
+export async function getUserByEmail(email: string) {
+    const rows = await sql`SELECT id, name, email, password_hash
+                               FROM users
+                               WHERE email = ${email}
+                               LIMIT 1`
+    
+    const user = rows[0];
+
+    if(!user) return null;
+
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        passwordHash: user.password_hash,
+    };
+}
+
 export async function addMeeting(
     data: Omit<SacramentMeeting, "id">
 ) : Promise<SacramentMeeting | null> {

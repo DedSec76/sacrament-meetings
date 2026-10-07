@@ -1,11 +1,15 @@
 import { Calendar } from "lucide-react"
 import Image from "next/image"
+import { SignOutButton } from "./sign-out-button"
+import { auth } from "@/auth";
+import Link from "next/link";
 
-export const Header = () => {
+export const Header = async () => {
+    const session = await auth();
     const date = new Date()
 
     return (
-        <header className="px-4 my-4">
+        <header className="px-4 my-4 flex justify-between items-center">
             <section className="flex gap-4">
                 <Image className="w-[60]" width={222} height={225} src={"/iconStake.webp"} alt="An icon of the stake to which we belong" /> 
                 <div>
@@ -19,6 +23,9 @@ export const Header = () => {
                     })}</p>
                 </div>
             </section>
+            { session ? (
+                <SignOutButton />
+            ) : <Link href={"/login"} className="hover:underline text-slate-200">Log In</Link> }
         </header>
     )
 }

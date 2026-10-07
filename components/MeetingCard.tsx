@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { SacramentMeeting } from "../lib/types";
-import { Trash } from "lucide-react";
-import { deleteAMeeting } from "@/lib/action";
 
 export default function MeetingCard(meeting: SacramentMeeting) {
     
     return (
-        
             <article className="border-t-4 border-primary bg-card-bg p-4 rounded-2xl">
                 <div className="flex justify-between">
                     <p className="text-gray-300 text-sm md:text-base">{ new Date(meeting.date).toLocaleString("en-US", {
@@ -15,11 +12,8 @@ export default function MeetingCard(meeting: SacramentMeeting) {
                         month: "long",
                         year: "numeric"
                     }) }</p>
-                    <form className="z-50" action={deleteAMeeting.bind(null, meeting.id)}>
-                        <button className="cursor-pointer" type="submit"><Trash color="pink"/></button>
-                    </form>
                 </div>
-                <Link  href={`meetings/${meeting.id}`}>
+                <Link href={`meetings/${meeting.id}`}>
                     <span className="text-xs md:text-sm text-gray-300 uppercase">Meeting type</span>
                     <h3 className="mb-4 text-lg md:text-xl capitalize">Sacrament meeting {meeting.meetingType}</h3>
                     <div className="mb-4 rounded-xl p-3 flex gap-4 border border-gray-800 bg-[#131b2e]">

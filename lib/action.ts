@@ -1,10 +1,19 @@
 "use server";
+
 import { z } from "zod";
 import { addMeeting, deleteMeeting, updateMeeting } from "./meetings-db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { MeetingType, } from "./types";
 import { parseHymn } from "@/app/utils/parseHymn";
+import { auth, signIn } from "@/auth";
+import { AuthError } from "next-auth";
+
+async function requireOwnerSession() {
+    const session = await auth();
+    if (!session?.user) throw new Error('Not authenticated');
+    return session;
+}
 
 const MeetingFormSchema = z.object({
     date: z.string().min(1, "Date is required"),
@@ -57,7 +66,28 @@ export type State = {
     }
 }
 
+export async function authenticate(
+    prevState: string | undefined,
+    formData: FormData,
+) {
+    try {
+        await signIn('credentials', formData);
+    } catch (error) {
+        if (error instanceof AuthError) {
+            switch (error.type) {
+                case 'CredentialsSignin':
+                    return 'Invalid email or password.';
+                default:
+                    return 'Something went wrong.';
+            }
+        }
+        throw error;
+    }
+}
+
 export async function createMeeting(prevState: State, formData: FormData): Promise<State> {
+    await requireOwnerSession();
+
     const validatedFields = MeetingFormSchema.safeParse({
         date: formData.get("date"),
         meeting_type: formData.get("meeting_type"),
@@ -139,11 +169,13 @@ export async function createMeeting(prevState: State, formData: FormData): Promi
         }
     }
 
-    revalidatePath("/meetings");
-    redirect("/meetings"); 
+    revalidatePath("/dashboard/meetings");
+    redirect("/dashboard/meetings"); 
 }
 
 export async function updateAMeeting(id: string, prevState: State, formData: FormData): Promise<State> {
+    await requireOwnerSession();
+
     const validatedFields = MeetingFormSchema.safeParse({
         date: formData.get("date"),
         meeting_type: formData.get("meeting_type"),
@@ -223,11 +255,13 @@ export async function updateAMeeting(id: string, prevState: State, formData: For
         }
     }
 
-    revalidatePath("/meetings");
-    redirect("/meetings"); 
+    revalidatePath("/dashboard/meetings");
+    redirect("/dashboard/meetings"); 
 }
 
 export async function deleteAMeeting(id: number) {
+    await requireOwnerSession();
+    
     try {
         const deleted = await deleteMeeting(id);
 
@@ -238,5 +272,5 @@ export async function deleteAMeeting(id: number) {
         throw new Error("Failed to delete meeting. Please try again later");
     }
 
-    revalidatePath("/meetings");
+    revalidatePath("/dashboard/meetings");
 }

@@ -11,8 +11,8 @@ export default function EditMeetingForm({ id, meeting }: { id: string; meeting: 
   const [state, formAction, isPending] = useActionState(updateWithId, initialState);
 
     return (
-        <form action={formAction} className="bg-gray-700 max-w-125 flex flex-col gap-6 mx-4 px-4 py-8 rounded-lg">
-            <h1 className='text-slate-200 font-bold text-xl text-center md:text-2xl'>Create New Meeting</h1>
+        <form action={formAction} className="bg-gray-700 max-w-125 flex flex-col gap-6 mx-auto px-4 py-8 rounded-lg">
+            <h1 className='text-slate-200 font-bold text-xl text-center md:text-2xl'>Edit Meeting</h1>
             <div className="flex flex-col gap-2">
                 <label htmlFor="date" className='text-slate-200 text-lg'>Meeting Date</label>
                 <input className="outline-0 bg-gray-600 rounded-lg pl-2 py-1" id="date" name="date" type="date" aria-describedby="date-error" defaultValue={meeting?.date} required />

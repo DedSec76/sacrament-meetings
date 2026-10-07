@@ -11,7 +11,7 @@ export default async function Page() {
     const formatDate = sunday.toISOString().split("T")[0];
     
     const meetings = await getMeetings(formatDate)
-    console.log(meetings)
+    
     if(!meetings.length) redirect("/meetings")
 
     redirect(`/meetings/${meetings[0].id}`)

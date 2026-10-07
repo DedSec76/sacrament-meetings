@@ -1,7 +1,9 @@
-import MeetingDetail from "@/components/MeetingDetail";
 import { getMeetingById } from "@/lib/meetings-db";
+import { notFound } from "next/navigation";
+import EditMeetingForm from "./edit-form";
+
 type Props = {
-    params: Promise<{ id: string }> 
+    params: Promise<{ id: string }>
 }
 export async function generateMetadata({ params }: Props) {
     const { id } = await params;
@@ -15,7 +17,7 @@ export async function generateMetadata({ params }: Props) {
     }
 
     return {
-        title: `${meeting.id} ${meeting.meetingType}`,
+        title: meeting.meetingType,
         description: meeting.announcements,
         openGraph: {
             title: meeting.meetingType,
@@ -27,11 +29,11 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function Page({ params }: Props) {
     const { id } = await params;
-    const meetingId = Number(id)
-   
-    return (
-        <main>
-            <MeetingDetail meetingId={meetingId} />
-        </main>
-    ) 
+    const meeting = await getMeetingById(Number(id));
+    
+    if (!meeting) {
+        notFound();
+    }
+
+    return <EditMeetingForm id={id} meeting={meeting} />
 }
