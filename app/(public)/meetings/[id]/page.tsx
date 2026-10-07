@@ -10,13 +10,13 @@ export async function generateMetadata({ params }: Props) {
     if(!meeting) {
         return {
             title: 'Meeting Not Found',
-            description: 'The requested meeting project could not be found.'
+            description: 'The requested meeting project could not be found.',
         }
     }
 
     return {
         title: `${meeting.id} ${meeting.meetingType}`,
-        description: meeting?.announcements?.map(a => a.split(",")),
+        description: meeting?.announcements?.join(","),
     }
 }
 
